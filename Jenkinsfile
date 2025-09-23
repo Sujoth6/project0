@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout code') {
             steps {
-                git url: 'https://github.com/Sujoth6/project0'
+                git url: 'https://github.com/Sujoth6/project0.git'
             }
         }
         stage('Build') {
@@ -15,6 +15,11 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'echo Running tests'
+            }
+        }
+        stage('Verifying') {
+            steps {
+                sh 'echo Verifying the test'
             }
         }
         stage('Deploy') {
