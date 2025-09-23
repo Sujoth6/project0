@@ -1,20 +1,24 @@
 pipeline {
     agent any
-
-    stages {
+    stages{
+        stage('Checkout code'){
+            steps{
+                git 'https://github.com/Sujoth6/project0'
+            }
+        }
         stage('Build') {
-            steps {
-                echo 'Building the app'
+         steps {
+               sh echo 'Building the project'
             }
         }
         stage('Test') {
             steps {
-                echo 'Running tests'
+              sh  echo 'Running tests'
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying the app'
+              sh  echo 'Deploying application...'
             }
         }
     }
