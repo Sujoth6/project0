@@ -19,12 +19,3 @@ pipeline {
         }
     }
 }
-post{
-success{
-    bat 'echo "the build successful"'
-}
-    failure{
-        bat 'echo "build failed"'
-    }
-}
-}
