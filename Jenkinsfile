@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout code') {
             steps {
-                git 'https://github.com/Sujoth6/project0'
+                git url: 'https://github.com/Sujoth6/project0'
             }
         }
         stage('Build') {
