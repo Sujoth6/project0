@@ -17,11 +17,6 @@ pipeline {
                 sh 'echo Running tests'
             }
         }
-        stage('Verifying') {
-            steps {
-                sh 'echo Verifying the test'
-            }
-        }
         stage('Deploy') {
             steps {
                 sh 'echo Deploying application'
