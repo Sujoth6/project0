@@ -2,70 +2,35 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "sujoth666/project0"  // Your Docker Hub repo
+        IMAGE_NAME = 'sujoth666/project0'
+        DOCKER_CREDENTIALS_ID = 'docker-hub-creds'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM',
-                          branches: [[name: '*/main']],
-                          userRemoteConfigs: [[url: 'https://github.com/Sujoth6/project0.git']]])
-            }
-        }
-
-        stage('Login to DockerHub') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'acb1a37f-d6ee-4e64-b011-edb63dbc2963', // Your Jenkins credential ID
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                }
+                git url: 'https://github.com/Sujoth6/project0.git', branch: 'main'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    echo "📦 Building Docker image..."
-                    sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
-                }
+                bat "docker build -t %IMAGE_NAME% ."
             }
         }
 
-        stage('Test') {
+        stage('Login to Docker Hub') {
             steps {
-                script {
-                    echo "🧪 Running container for quick test..."
-                    sh "docker run -d --name test_container_${BUILD_NUMBER} -p 5000:5000 ${DOCKER_IMAGE}:${BUILD_NUMBER}"
-                    sh "sleep 5"
-                    sh "docker ps | grep test_container_${BUILD_NUMBER}"
-                    sh "docker stop test_container_${BUILD_NUMBER}"
-                    sh "docker rm test_container_${BUILD_NUMBER}"
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    bat "echo %PASSWORD% | docker login -u %USERNAME% --password-stdin"
                 }
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push Image') {
             steps {
-                script {
-                    echo "⬆️ Pushing Docker image..."
-                    sh "docker push ${DOCKER_IMAGE}:${BUILD_NUMBER}"
-                    sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
-                    sh "docker push ${DOCKER_IMAGE}:latest"
-                }
+                bat "docker push %IMAGE_NAME%"
             }
-        }
-    }
-
-    post {
-        success {
-            echo "✅ Successfully built and pushed ${DOCKER_IMAGE}:${BUILD_NUMBER} and :latest"
-        }
-        failure {
-            echo "❌ Pipeline failed!"
         }
     }
 }
