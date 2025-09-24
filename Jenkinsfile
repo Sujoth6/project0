@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/Sujoth6/project0.git'
+                git url: 'https://github.com/Sujoth6/project0.git', branch: 'main'
             }
         }
 
@@ -67,4 +67,3 @@ pipeline {
         }
     }
 }
-
