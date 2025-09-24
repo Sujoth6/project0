@@ -1,35 +1,20 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = 'sujoth666/project0'
-        DOCKER_CREDENTIALS_ID = 'docker-hub-creds'
-    }
-
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                git url: 'https://github.com/Sujoth6/project0.git', branch: 'main'
+                echo 'Building the app'
             }
         }
-
-        stage('Build Docker Image') {
+        stage('Test') {
             steps {
-                sh "docker build -t $IMAGE_NAME ."
+                echo 'Running tests'
             }
         }
-
-        stage('Login to Docker Hub') {
+        stage('Deploy') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "$DOCKER_CREDENTIALS_ID", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
-                }
-            }
-        }
-
-        stage('Push Image') {
-            steps {
-                sh "docker push $IMAGE_NAME"
+                echo 'Deploying the app'
             }
         }
     }
